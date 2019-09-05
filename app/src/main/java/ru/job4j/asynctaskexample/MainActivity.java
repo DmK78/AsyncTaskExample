@@ -17,7 +17,7 @@ public class MainActivity extends AppCompatActivity {
     ProgressBar progressBar;
     Button button;
     SampleAsyncTask sampleAsyncTask;
-    private int initialCount=30;
+    private int totalSecondsForTimer =5;
     int count=0;
 
     @Override
@@ -28,19 +28,24 @@ public class MainActivity extends AppCompatActivity {
         button = findViewById(R.id.buttonStart);
         if (savedInstanceState != null) {
             count = savedInstanceState.getInt("count", -1);
+            if(count== totalSecondsForTimer){
+                sampleAsyncTask=null;
+                count=0;
+            }
             if (count > 0) {
+
                 sampleAsyncTask=new SampleAsyncTask(this,count);
-                sampleAsyncTask.execute(initialCount);
+                sampleAsyncTask.execute(totalSecondsForTimer);
             }
         }
     }
 
     public void startAsyncTask(View view) {
         progressBar.setVisibility(View.VISIBLE);
-        if (sampleAsyncTask == null) {
             sampleAsyncTask = new SampleAsyncTask(this,0);
-            sampleAsyncTask.execute(initialCount);
-        }
+            sampleAsyncTask.execute(totalSecondsForTimer);
+            button.setClickable(false);
+
     }
 
     private static class SampleAsyncTask extends AsyncTask<Integer, Integer, String> {
@@ -88,6 +93,7 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(activity, s, Toast.LENGTH_SHORT).show();
             activity.progressBar.setProgress(0);
             activity.progressBar.setVisibility(View.INVISIBLE);
+            activity.button.setClickable(true);
         }
 
         @Override
